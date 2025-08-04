@@ -551,14 +551,19 @@ const generateUniqueFileName = async (basePath, baseName, extension) => {
  */
 export const downloadImage = async (dataUrl, exportPath = null, filename = '尺码表') => {
   try {
+    console.log('downloadImage called with:', { exportPath, filename, hasElectronAPI: !!window.electronAPI, hasSaveImageToPath: !!(window.electronAPI && window.electronAPI.saveImageToPath) });
+    
     if (exportPath && window.electronAPI && window.electronAPI.saveImageToPath) {
+      console.log('使用Electron API保存到指定路径:', exportPath);
       // 使用 Electron API 直接保存到指定路径
       const fullPath = await generateUniqueFileName(exportPath, filename, 'jpg');
+      console.log('生成的完整路径:', fullPath);
       
       // 将 base64 数据转换为 Buffer
       const base64Data = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
       
       const result = await window.electronAPI.saveImageToPath(fullPath, base64Data);
+      console.log('保存结果:', result);
       
       if (result.success) {
         // 显示保存成功提示
@@ -574,6 +579,11 @@ export const downloadImage = async (dataUrl, exportPath = null, filename = '尺�
         throw new Error(result.error || '保存失败');
       }
     } else {
+      console.log('条件不满足，使用传统下载方式:', { 
+        hasExportPath: !!exportPath, 
+        hasElectronAPI: !!window.electronAPI, 
+        hasSaveImageToPath: !!(window.electronAPI && window.electronAPI.saveImageToPath) 
+      });
       // 使用传统的下载方式
       const link = document.createElement('a');
       link.download = `${filename}.jpg`;

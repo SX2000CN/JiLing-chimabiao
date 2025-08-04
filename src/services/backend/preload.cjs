@@ -258,6 +258,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // 向后兼容的顶级文件存在检查方法
   fileExists: (filePath) => ipcRenderer.invoke('file:exists', filePath),
   
+  // 向后兼容的顶级图片保存方法
+  saveImageToPath: (filePath, base64Data) => ipcRenderer.invoke('file:saveImage', filePath, base64Data),
+  
   // 工具函数
   utils: {
     // 生成唯一ID
