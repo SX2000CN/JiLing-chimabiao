@@ -117,6 +117,16 @@ const WindowTitle = styled.div`
   color: ${props => props.theme.colors.gray[700]};
   white-space: nowrap;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const AppIcon = styled.img`
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  object-fit: contain;
 `;
 
 const ToolbarButtons = styled.div`
@@ -233,6 +243,7 @@ const TitleBar = ({
 
       {showTitle && (
         <WindowTitle>
+          <AppIcon src="/icon_32x32.png" alt="应用图标" />
           {title}
         </WindowTitle>
       )}
