@@ -1,6 +1,6 @@
 {
   "name": "jiling-size-table",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "集领商品部尺码表生成器",
   "author": "师兄",
@@ -82,6 +82,7 @@
       "package.json",
       "node_modules/**/*",
       "build/icon.ico",
+      "build/app.ico",
       "build/icon.png"
     ],
     "extraFiles": [
@@ -91,6 +92,20 @@
         "filter": [
           "**/*"
         ]
+      }
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "build/icon.ico"
+      },
+      {
+        "from": "build/icon.png", 
+        "to": "build/icon.png"
+      },
+      {
+        "from": "build/app.ico",
+        "to": "build/app.ico"
       }
     ],
     "win": {
@@ -118,11 +133,19 @@
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico", 
       "installerHeaderIcon": "build/icon.ico",
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": false,
       "shortcutName": "集领尺码表生成器",
+      "menuCategory": false,
+      "perMachine": false,
+      "artifactName": "集领尺码表生成器-Setup-${version}.exe",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "displayLanguageSelector": false,
+      "installerLanguages": ["zh_CN"],
+      "language": "2052",
       "include": "build/installer.nsh"
     },
     "portable": {
