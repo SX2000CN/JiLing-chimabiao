@@ -80,7 +80,9 @@
       "main.cjs",
       "src/services/backend/**/*",
       "package.json",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "build/icon.ico",
+      "build/icon.png"
     ],
     "extraFiles": [
       {
@@ -120,7 +122,8 @@
       "installerHeaderIcon": "build/icon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "集领尺码表生成器"
+      "shortcutName": "集领尺码表生成器",
+      "include": "build/installer.nsh"
     },
     "portable": {
       "artifactName": "集领尺码表生成器-${version}-portable.exe"

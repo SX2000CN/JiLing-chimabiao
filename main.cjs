@@ -102,7 +102,7 @@ class Application {
       minHeight: 600,
       show: false, // 初始不显示，等加载完成后显示
       backgroundColor: '#F9FAFB',
-      icon: path.join(__dirname, 'build', 'icon.png'), // 修正图标路径
+      icon: path.join(__dirname, 'build', 'icon.ico'), // 使用ICO格式图标
       frame: false,              // 移除系统标题栏和边框
       titleBarStyle: 'hidden',   // macOS 兼容
       titleBarOverlay: false,    // 禁用标题栏覆盖
