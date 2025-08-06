@@ -3,7 +3,8 @@ import { ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { presetCategories, storage } from '../services/dataManager';
-import { calculateSizeData } from '../services/sizeCalculator';
+import { calculateSizeData, formatSizeDataForTable } from '../services/sizeCalculator';
+import { exportSizeTableToImage, downloadImage } from '../services/tableExporter';
 
 // 组件导入
 import Toolbar from './Toolbar';
@@ -62,6 +63,30 @@ const App = () => {
     exportPath: '', // 导出路径设置
   });
 
+  // 导出状态管理
+  const [exportStatus, setExportStatus] = useState({
+    show: false,
+    message: '',
+    type: 'success' // 'success', 'error', 'loading'
+  });
+
+  // 显示导出状态提示
+  const showExportStatus = (message, type = 'success') => {
+    setExportStatus({
+      show: true,
+      message,
+      type
+    });
+
+    // 2秒后自动隐藏
+    setTimeout(() => {
+      setExportStatus(prev => ({
+        ...prev,
+        show: false
+      }));
+    }, 2000);
+  };
+
   // 初始化数据
   useEffect(() => {
     // 从本地存储加载数据
@@ -69,40 +94,100 @@ const App = () => {
     const savedSettings = storage.load('sizeSettings', appState.sizeSettings);
     const savedMode = storage.load('mode', appState.mode);
     const savedStartValues = storage.load('categoryStartValues', {});
+    const savedExportPath = storage.load('exportPath', '');
 
     setAppState(prev => ({
       ...prev,
       categories: [...presetCategories, ...savedCategories],
       sizeSettings: savedSettings,
       mode: savedMode,
-      categoryStartValues: savedStartValues
+      categoryStartValues: savedStartValues,
+      exportPath: savedExportPath
     }));
   }, []);
 
   // 添加键盘快捷键监听
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    // 格式化数据用于导出
+    const formatChartDataForExport = (chartData) => {
+      if (!chartData || chartData.length === 0) return [];
+      
+      // 使用正确的格式化函数 - 与 PreviewPanel 保持一致
+      const { headers, rows } = formatSizeDataForTable(chartData);
+      
+      // 转换为对象数组格式，确保第一列是尺码
+      return rows.map(row => {
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        return obj;
+      });
+    };
+
+    const handleKeyDown = async (event) => {
       // Ctrl + S 导出图片
       if (event.ctrlKey && event.key === 's') {
         event.preventDefault();
-        console.log('Ctrl+S pressed, chartData:', !!appState.chartData);
+        console.log('Ctrl+S pressed, selectedCategories:', appState.selectedCategories.length, 'chartData:', !!appState.chartData);
         
-        // 触发图片导出 - 发送自定义事件
-        if (appState.chartData) {
-          console.log('Dispatching export-shortcut event');
-          window.dispatchEvent(new CustomEvent('export-shortcut', { 
-            detail: { format: 'jpeg' } 
-          }));
+        // 改进逻辑：如果有选中的类别但没有 chartData，先尝试生成
+        if (appState.selectedCategories.length > 0) {
+          let chartDataToUse = appState.chartData;
+          
+          // 如果没有 chartData，立即生成
+          if (!chartDataToUse) {
+            try {
+              chartDataToUse = calculateSizeData(
+                appState.sizeSettings, 
+                appState.selectedCategories, 
+                appState.mode, 
+                appState.categoryStartValues
+              );
+              console.log('临时生成尺码数据成功');
+            } catch (error) {
+              console.error('生成尺码数据失败:', error);
+              showExportStatus('❌ 生成尺码数据失败', 'error');
+              return;
+            }
+          }
+          
+          // 直接在这里处理导出，不再依赖 PreviewPanel
+          try {
+            const tableData = formatChartDataForExport(chartDataToUse);
+            const tipText = appState.mode === 'sweater' ? 
+              '温馨提示:由于手工测量会存在1-3cm误差，属于正常范围' : 
+              '温馨提示:由于手工测量会存在1-3cm误差，属于正常范围';
+            
+            const imageDataUrl = exportSizeTableToImage(tableData, tipText);
+            
+            // 如果设置了导出路径，直接保存；否则弹出下载对话框
+            if (appState.exportPath) {
+              console.log('使用设置的导出路径:', appState.exportPath);
+              await downloadImage(imageDataUrl, appState.exportPath, '尺码表');
+              showExportStatus('📁 图片已保存到指定路径', 'success');
+            } else {
+              console.log('未设置导出路径，使用传统下载方式');
+              const filename = `尺码表_${new Date().toISOString().slice(0, 10)}`;
+              downloadImage(imageDataUrl, null, filename);
+              showExportStatus('💾 图片导出成功', 'success');
+            }
+            
+            console.log('图片导出成功');
+          } catch (error) {
+            console.error('导出图片失败:', error);
+            showExportStatus('❌ 导出失败: ' + error.message, 'error');
+          }
         } else {
-          console.log('No chart data available');
-          alert('请先生成尺码表数据');
+          console.log('No categories selected');
+          showExportStatus('⚠️ 请先选择尺码类别', 'error');
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [appState.chartData]);
+  }, [appState.selectedCategories, appState.sizeSettings, appState.mode, appState.categoryStartValues, appState.chartData, appState.exportPath]);
 
   // 保存数据到本地存储
   useEffect(() => {
@@ -111,7 +196,8 @@ const App = () => {
     storage.save('sizeSettings', appState.sizeSettings);
     storage.save('categoryStartValues', appState.categoryStartValues);
     storage.save('mode', appState.mode);
-  }, [appState.categories, appState.sizeSettings, appState.mode, appState.categoryStartValues]);
+    storage.save('exportPath', appState.exportPath);
+  }, [appState.categories, appState.sizeSettings, appState.mode, appState.categoryStartValues, appState.exportPath]);
 
   // 实时更新预览 - 当设置或选择变化时自动生成预览
   useEffect(() => {
@@ -225,6 +311,7 @@ const App = () => {
         
         <StatusBar
           appState={appState}
+          exportStatus={exportStatus}
         />
 
         <SettingsPanel

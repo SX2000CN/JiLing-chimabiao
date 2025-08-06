@@ -12,9 +12,21 @@ const Overlay = styled(motion.div)`
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 24px;
+  padding-top: 10vh; /* 距离顶部10vh，确保在小窗口中也能完全显示 */
+  overflow-y: auto;
+
+  /* 响应式调整 */
+  @media (max-height: 600px) {
+    padding-top: 24px; /* 小高度窗口时减少顶部间距 */
+  }
+  
+  @media (max-width: 480px) {
+    padding: 16px;
+    padding-top: 24px;
+  }
 `;
 
 const ModalContainer = styled(motion.div)`
@@ -23,8 +35,9 @@ const ModalContainer = styled(motion.div)`
   box-shadow: ${props => props.theme.shadows.xl};
   max-width: ${props => props.$maxWidth || '500px'};
   width: 100%;
-  max-height: 90vh;
+  max-height: 80vh; /* 减少最大高度，为顶部和底部留出更多空间 */
   overflow-y: auto;
+  margin-bottom: 24px; /* 确保底部有足够空间 */
 `;
 
 const ModalHeader = styled.div`

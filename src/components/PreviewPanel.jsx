@@ -255,8 +255,11 @@ const PreviewPanel = ({ appState }) => {
   useEffect(() => {
     const handleExportShortcut = (event) => {
       console.log('Export shortcut event received:', event.detail);
-      const { format } = event.detail;
-      handleExportImage(format);
+      const { format, chartData: eventChartData } = event.detail;
+      
+      // 使用传递的 chartData 或组件的 chartData
+      const dataToUse = eventChartData || chartData;
+      handleExportImage(format, dataToUse);
     };
 
     window.addEventListener('export-shortcut', handleExportShortcut);
@@ -264,14 +267,16 @@ const PreviewPanel = ({ appState }) => {
   }, [chartData, appState.exportPath]);
 
   // 导出为图片
-  const handleExportImage = async (format = 'jpeg') => {
-    if (!chartData || chartData.length === 0) {
+  const handleExportImage = async (format = 'jpeg', dataToUse = null) => {
+    const chartDataToUse = dataToUse || chartData;
+    
+    if (!chartDataToUse || chartDataToUse.length === 0) {
       alert('请先生成尺码表数据');
       return;
     }
 
     try {
-      const tableData = formatChartDataForExport(chartData);
+      const tableData = formatChartDataForExport(chartDataToUse);
       const tipText = mode === 'sweater' ? '温馨提示:由于手工测量会存在1-3cm误差，属于正常范围' : '温馨提示:由于手工测量会存在1-3cm误差，属于正常范围';
       
       const imageDataUrl = exportSizeTableToImage(tableData, tipText);

@@ -61,7 +61,7 @@ const ProgressIndicator = styled(motion.div)`
 /**
  * 状态栏组件
  */
-const StatusBar = ({ appState }) => {
+const StatusBar = ({ appState, exportStatus }) => {
   const { 
     selectedCategories, 
     chartData, 
@@ -74,6 +74,15 @@ const StatusBar = ({ appState }) => {
 
   // 获取当前状态信息
   const getStatusInfo = () => {
+    // 优先显示导出状态
+    if (exportStatus && exportStatus.show) {
+      return { 
+        text: exportStatus.message, 
+        type: exportStatus.type,
+        isExport: true 
+      };
+    }
+    
     if (isGenerating) {
       return { text: '正在生成尺码表...', type: 'generating' };
     }
@@ -89,7 +98,7 @@ const StatusBar = ({ appState }) => {
     return { text: '准备生成', type: 'ready' };
   };
 
-  const { text: statusText, type: statusType } = getStatusInfo();
+  const { text: statusText, type: statusType, isExport } = getStatusInfo();
 
   return (
     <StatusBarContainer>
@@ -107,10 +116,20 @@ const StatusBar = ({ appState }) => {
         ) : (
           <StatusItem>
             <StatusIcon>
-              {statusType === 'ready' ? '✅' : 
-               statusType === 'idle' ? '⏸️' : '⚠️'}
+              {isExport ? (
+                statusType === 'success' ? '✅' : 
+                statusType === 'error' ? '❌' : '📤'
+              ) : (
+                statusType === 'ready' ? '✅' : 
+                statusType === 'idle' ? '⏸️' : '⚠️'
+              )}
             </StatusIcon>
-            <span>{statusText}</span>
+            <span style={{
+              color: isExport && statusType === 'success' ? '#22c55e' :
+                     isExport && statusType === 'error' ? '#ef4444' : 'inherit'
+            }}>
+              {statusText}
+            </span>
           </StatusItem>
         )}
 

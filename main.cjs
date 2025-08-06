@@ -26,7 +26,44 @@ class Application {
     this.ipcHandler = null;
     this.isQuitting = false;
     
+    // 单实例检查
+    this.setupSingleInstance();
     this.setupApp();
+  }
+
+  /**
+   * 设置单实例运行
+   */
+  setupSingleInstance() {
+    const gotTheLock = app.requestSingleInstanceLock();
+
+    if (!gotTheLock) {
+      // 如果获取锁失败，说明已经有实例在运行，退出当前实例
+      console.log('应用已在运行，退出当前实例');
+      app.quit();
+      return;
+    }
+
+    // 当第二个实例试图启动时，聚焦到第一个实例
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      console.log('检测到第二个实例启动，聚焦到主窗口');
+      
+      // 如果主窗口存在，则聚焦并显示
+      if (this.mainWindow) {
+        // 如果窗口被最小化，恢复它
+        if (this.mainWindow.isMinimized()) {
+          this.mainWindow.restore();
+        }
+        
+        // 聚焦并显示在最前面
+        this.mainWindow.focus();
+        this.mainWindow.show();
+        
+        // 确保窗口显示在所有其他窗口前面
+        this.mainWindow.setAlwaysOnTop(true);
+        this.mainWindow.setAlwaysOnTop(false);
+      }
+    });
   }
 
   /**
