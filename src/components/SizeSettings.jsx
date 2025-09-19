@@ -244,6 +244,30 @@ const SizeSettings = ({ appState, setAppState }) => {
   const { sizeSettings, selectedCategories, categoryStartValues, categories, mode } = appState;
   const { startSize, count } = sizeSettings;
   
+  // Tab键焦点循环处理
+  const handleStartValueKeyDown = (event, currentIndex) => {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      
+      const inputElements = document.querySelectorAll('[data-start-value-input]');
+      const totalInputs = inputElements.length;
+      
+      if (totalInputs === 0) return;
+      
+      let nextIndex;
+      if (event.shiftKey) {
+        // Shift+Tab: 向前循环
+        nextIndex = currentIndex === 0 ? totalInputs - 1 : currentIndex - 1;
+      } else {
+        // Tab: 向后循环
+        nextIndex = currentIndex === totalInputs - 1 ? 0 : currentIndex + 1;
+      }
+      
+      // 聚焦到下一个输入框
+      inputElements[nextIndex]?.focus();
+    }
+  };
+  
   // 计算在当前模式下的实际递增值
   const getActualIncrement = (category) => {
     let increment = category.baseIncrement;
@@ -460,9 +484,11 @@ const SizeSettings = ({ appState, setAppState }) => {
                   max="200"
                   value={getCategoryStartValue(category)}
                   onChange={(e) => updateCategoryStartValue(category.id, e.target.value)}
+                  onKeyDown={(e) => handleStartValueKeyDown(e, index)}
                   placeholder={`默认 ${category.baseValue}`}
                   size="small"
                   autoComplete="off"
+                  data-start-value-input
                 />
                 
                 <UnitLabel>cm</UnitLabel>

@@ -126,8 +126,8 @@ const App = () => {
     };
 
     const handleKeyDown = async (event) => {
-      // Ctrl + S 导出图片
-      if (event.ctrlKey && event.key === 's') {
+      // Ctrl + S 导出图片 - 支持大小写锁定
+      if (event.ctrlKey && (event.key === 's' || event.key === 'S')) {
         event.preventDefault();
         console.log('Ctrl+S pressed, selectedCategories:', appState.selectedCategories.length, 'chartData:', !!appState.chartData);
         
