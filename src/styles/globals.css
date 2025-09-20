@@ -1,6 +1,9 @@
 /* 导入 MiSans 字体 */
 @import url('../assets/fonts/MiSans.css');
 
+/* 导入主题变量 */
+@import url('./theme-variables.css');
+
 /* 全局重置样式 */
 * {
   margin: 0;

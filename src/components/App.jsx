@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
+import { useTheme } from '../contexts/ThemeContext';
 import { presetCategories, storage } from '../services/dataManager';
 import { calculateSizeData, formatSizeDataForTable } from '../services/sizeCalculator';
 import { exportSizeTableToImage, downloadImage } from '../services/tableExporter';
@@ -46,6 +46,9 @@ const ContentArea = styled.div`
  * 应用主入口组件
  */
 const App = () => {
+  // 获取主题上下文
+  const { theme } = useTheme();
+  
   // 简单的状态管理 - 直接在 App 层级
   const [appState, setAppState] = useState({
     mode: 'normal',
@@ -290,7 +293,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppContainer>
+      <AppContainer data-theme={theme.mode}>
         <Toolbar
           appState={appState}
           setAppState={setAppState}

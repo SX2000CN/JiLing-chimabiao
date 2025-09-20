@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
 import CategoryManager from './CategoryManager';
+import { useTheme } from '../contexts/ThemeContext';
 
 const PanelContainer = styled(motion.div)`
   position: fixed;
@@ -89,6 +90,7 @@ const SettingsPanel = ({
   onCategoryDelete 
 }) => {
   const [activeTab, setActiveTab] = useState('categories');
+  const { theme, isDarkMode, toggleTheme } = useTheme();
 
   const tabs = [
     { id: 'categories', label: '类别管理' },
@@ -115,19 +117,97 @@ const SettingsPanel = ({
               fontSize: '16px', 
               fontWeight: '600', 
               marginBottom: '16px',
-              color: '#374151',
+              color: 'var(--text-primary, #374151)',
               fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale'
             }}>通用设置</h3>
             
+
+            {/* 深色模式开关 */}
+            <div style={{ 
+              marginBottom: '20px',
+              padding: '16px', 
+              background: 'var(--bg-secondary, #F9FAFB)', 
+              borderRadius: '8px',
+              border: '1px solid var(--border-light, #E5E7EB)'
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center'
+              }}>
+                <div>
+                  <label style={{ 
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    color: 'var(--text-primary, #374151)',
+                    display: 'block',
+                    marginBottom: '4px',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segue UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale'
+                  }}>深色模式</label>
+                  <div style={{
+                    fontSize: '12px',
+                    color: 'var(--text-secondary, #6B7280)',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segue UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale'
+                  }}>切换应用主题外观</div>
+                </div>
+                <label style={{ 
+                  position: 'relative',
+                  display: 'inline-block',
+                  width: '44px',
+                  height: '24px',
+                  cursor: 'pointer'
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={isDarkMode}
+                    onChange={toggleTheme}
+                    style={{
+                      opacity: 0,
+                      width: 0,
+                      height: 0
+                    }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: isDarkMode ? '#007AFF' : '#D1D5DB',
+                    borderRadius: '12px',
+                    transition: 'background-color 0.2s ease',
+                    cursor: 'pointer'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      content: '',
+                      height: '18px',
+                      width: '18px',
+                      left: isDarkMode ? '23px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: '#FFFFFF',
+                      borderRadius: '50%',
+                      transition: 'left 0.2s ease',
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
+                    }} />
+                  </span>
+                </label>
+              </div>
+            </div>
+            
             {/* 导出路径设置 */}
             <div style={{ 
               marginBottom: '20px',
               padding: '16px', 
-              background: '#F9FAFB', 
+              background: 'var(--bg-secondary, #F9FAFB)', 
               borderRadius: '8px',
-              border: '1px solid #E5E7EB'
+              border: '1px solid var(--border-light, #E5E7EB)'
             }}>
               <div style={{ 
                 display: 'flex', 
@@ -138,7 +218,7 @@ const SettingsPanel = ({
                 <label style={{ 
                   fontWeight: '500',
                   fontSize: '14px',
-                  color: '#374151',
+                  color: 'var(--text-primary, #374151)',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale'
@@ -154,11 +234,11 @@ const SettingsPanel = ({
                   style={{
                     flex: 1,
                     padding: '8px 12px',
-                    border: '1px solid #D1D5DB',
+                    border: '1px solid var(--border-light, #D1D5DB)',
                     borderRadius: '6px',
                     fontSize: '13px',
-                    background: '#F9FAFB',
-                    color: '#6B7280',
+                    background: 'var(--bg-secondary, #F9FAFB)',
+                    color: 'var(--text-secondary, #6B7280)',
                     fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
                     wordBreak: 'break-all',
                     minHeight: '16px',
@@ -198,7 +278,7 @@ const SettingsPanel = ({
               
               <div style={{ 
                 fontSize: '12px',
-                color: '#6B7280',
+                color: 'var(--text-secondary, #6B7280)',
                 marginTop: '8px',
                 fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                 WebkitFontSmoothing: 'antialiased',
@@ -210,9 +290,9 @@ const SettingsPanel = ({
             
             <div style={{ 
               padding: '16px', 
-              background: '#F9FAFB', 
+              background: 'var(--bg-secondary, #F9FAFB)', 
               borderRadius: '8px',
-              border: '1px solid #E5E7EB'
+              border: '1px solid var(--border-light, #E5E7EB)'
             }}>
               <div style={{ 
                 display: 'flex', 
@@ -224,10 +304,11 @@ const SettingsPanel = ({
                   fontWeight: '500',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale'
+                  MozOsxFontSmoothing: 'grayscale',
+                  color: 'var(--text-primary, #111827)'
                 }}>程序名称</span>
                 <span style={{ 
-                  color: '#374151',
+                  color: 'var(--text-primary, #374151)',
                   fontWeight: '600',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
@@ -245,10 +326,11 @@ const SettingsPanel = ({
                   fontWeight: '500',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale'
+                  MozOsxFontSmoothing: 'grayscale',
+                  color: 'var(--text-primary, #111827)'
                 }}>开发者</span>
                 <span style={{ 
-                  color: '#6B7280',
+                  color: 'var(--text-secondary, #6B7280)',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale'
@@ -265,19 +347,20 @@ const SettingsPanel = ({
                   fontWeight: '500',
                   fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale'
+                  MozOsxFontSmoothing: 'grayscale',
+                  color: 'var(--text-primary, #111827)'
                 }}>应用版本</span>
                 <span style={{ 
-                  color: '#6B7280',
+                  color: 'var(--text-secondary, #6B7280)',
                   fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale'
-                }}>v1.6.0</span>
+                }}>v2.0.0</span>
               </div>
               
               <div style={{ 
                 fontSize: '12px',
-                color: '#6B7280',
+                color: 'var(--text-secondary, #6B7280)',
                 marginTop: '8px',
                 fontStyle: 'italic',
                 fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -291,7 +374,7 @@ const SettingsPanel = ({
             <div style={{ 
               marginTop: '20px',
               fontSize: '14px',
-              color: '#6B7280',
+              color: 'var(--text-secondary, #6B7280)',
               fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale'
@@ -320,6 +403,7 @@ const SettingsPanel = ({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
           >
             <PanelHeader>
               <PanelTitle>设置</PanelTitle>

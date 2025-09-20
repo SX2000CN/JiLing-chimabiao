@@ -66,6 +66,7 @@ const CategoryItemContainer = styled(motion.div)`
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* 更流畅的缓动 */
   user-select: none;
   position: relative;
+  color: ${props => props.theme.colors.gray[700]}; /* 添加默认文字颜色，从gray[600]改为gray[700]使其更清晰 */
   
   /* 高质量渲染基础 */
   -webkit-transform: translateZ(0);
@@ -74,6 +75,7 @@ const CategoryItemContainer = styled(motion.div)`
 
   &:hover {
     background: ${props => props.theme.colors.gray[50]};
+    color: ${props => props.theme.colors.gray[800]}; /* 悬停时文字更深一些 */
     transform: translateY(-1px) translateZ(0); /* 轻微上浮效果 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
@@ -85,6 +87,7 @@ const CategoryItemContainer = styled(motion.div)`
     
     &:hover {
       background: ${props.theme.colors.primary}dd;
+      color: white; /* 确保选中状态悬停时文字保持白色 */
       transform: translateY(-1px) translateZ(0);
       box-shadow: 0 4px 16px rgba(0, 122, 255, 0.4);
     }

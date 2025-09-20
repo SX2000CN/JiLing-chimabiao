@@ -76,13 +76,7 @@ const CanvasContainer = styled.div`
   justify-content: center;
   padding: 24px;
   overflow: auto;
-  background: 
-    linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
-    linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
-    linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
-    linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background: ${props => props.theme.colors.background.secondary}; /* 使用纯色背景替代透明格子 */
   min-height: 400px;
 `;
 

@@ -1,0 +1,51 @@
+/* 主题颜色变量 */
+:root {
+  /* 浅色模式 */
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-tertiary: #F1F3F4;
+  --border-light: #E5E7EB;
+  --border-medium: #D1D5DB;
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+  --text-primary: #F2F2F7;
+  --text-secondary: #AEAEB2;
+  --text-tertiary: #8E8E93;
+  --bg-primary: #1C1C1E;
+  --bg-secondary: #2C2C2E;
+  --bg-tertiary: #3A3A3C;
+  --border-light: #3A3A3C;
+  --border-medium: #48484A;
+}
+
+/* 自动检测系统主题偏好 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --text-primary: #F2F2F7;
+    --text-secondary: #AEAEB2;
+    --text-tertiary: #8E8E93;
+    --bg-primary: #1C1C1E;
+    --bg-secondary: #2C2C2E;
+    --bg-tertiary: #3A3A3C;
+    --border-light: #3A3A3C;
+    --border-medium: #48484A;
+  }
+}
+
+/* 设置面板标签文字的主题适配 */
+.settings-panel-label {
+  color: var(--text-primary) !important;
+}
+
+.settings-panel-value {
+  color: var(--text-secondary) !important;
+}
+
+.settings-panel-primary-value {
+  color: var(--text-primary) !important;
+}

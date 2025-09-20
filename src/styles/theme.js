@@ -1,4 +1,5 @@
-export const theme = {
+﻿// 深色模式和浅色模式的主题配置
+const lightTheme = {
   colors: {
     // 系统色彩
     primary: '#007AFF',
@@ -28,6 +29,14 @@ export const theme = {
       tertiary: '#F1F3F4',
     },
     
+    // 文本色
+    text: {
+      primary: '#111827',
+      secondary: '#6B7280',
+      tertiary: '#9CA3AF',
+      inverse: '#FFFFFF',
+    },
+    
     // 边框色
     border: {
       light: '#E5E7EB',
@@ -41,8 +50,65 @@ export const theme = {
       yellow: '#FFBD2E',
       green: '#28CA42',
     }
-  },
-  
+  }
+};
+
+const darkTheme = {
+  colors: {
+    // 系统色彩 - 深色模式下稍微调亮
+    primary: '#0A84FF',
+    secondary: '#5E5CE6',
+    success: '#30D158',
+    warning: '#FF9F0A',
+    error: '#FF453A',
+    
+    // 灰度色阶 - 深色模式反转
+    gray: {
+      50: '#1C1C1E',
+      100: '#2C2C2E',
+      200: '#3A3A3C',
+      300: '#48484A',
+      400: '#636366',
+      500: '#8E8E93',
+      600: '#AEAEB2',
+      700: '#C7C7CC',
+      800: '#D1D1D6',
+      900: '#F2F2F7',
+    },
+    
+    // 背景色 - 深色背景
+    background: {
+      primary: '#1C1C1E',
+      secondary: '#2C2C2E',
+      tertiary: '#3A3A3C',
+    },
+    
+    // 文本色 - 深色模式文本
+    text: {
+      primary: '#F2F2F7',
+      secondary: '#AEAEB2',
+      tertiary: '#8E8E93',
+      inverse: '#1C1C1E',
+    },
+    
+    // 边框色 - 深色边框
+    border: {
+      light: '#3A3A3C',
+      medium: '#48484A',
+      dark: '#636366',
+    },
+
+    // 窗口控制按钮 - 深色模式下稍微调整
+    controls: {
+      red: '#FF5F57',
+      yellow: '#FFBD2E',
+      green: '#28CA42',
+    }
+  }
+};
+
+// 共享的基础样式配置
+const baseStyles = {
   spacing: {
     xs: '4px',
     sm: '8px',
@@ -130,4 +196,24 @@ export const theme = {
       slow: '0.3s',
     }
   }
+};
+
+// 创建主题函数，根据模式返回相应主题
+export const createTheme = (isDarkMode = false) => {
+  const colorTheme = isDarkMode ? darkTheme : lightTheme;
+  
+  return {
+    ...colorTheme,
+    ...baseStyles,
+    mode: isDarkMode ? 'dark' : 'light',
+  };
+};
+
+// 默认导出浅色主题（向后兼容）
+export const theme = createTheme(false);
+
+// 导出主题常量
+export const THEME_MODES = {
+  LIGHT: 'light',
+  DARK: 'dark'
 };

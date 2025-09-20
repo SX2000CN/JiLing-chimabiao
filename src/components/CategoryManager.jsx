@@ -35,7 +35,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 16px;
-  color: ${props => props.theme.colors.gray[600]};
+  color: ${props => props.theme.colors.text.secondary}; /* 使用主题的次要文本颜色，适配深色模式 */
   margin: 0;
 `;
 
@@ -43,6 +43,18 @@ const CategoryGrid = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px; /* 参考侧栏的间距 */
+`;
+
+const StatusText = styled.div`
+  font-size: 14px;
+  color: ${props => props.theme.colors.text.primary};
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 const CategoryCard = styled(motion.div)`
@@ -397,9 +409,9 @@ const CategoryManager = ({
 
       {!showHeader && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <div style={{ fontSize: '14px', color: '#6B7280' }}>
+          <StatusText>
             当前共有 {categories.length} 个类别
-          </div>
+          </StatusText>
           <Button
             variant="primary"
             size="small"
@@ -415,14 +427,9 @@ const CategoryManager = ({
       {/* 自定义类别 */}
       {customCategories.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ 
-            fontSize: '18px', 
-            fontWeight: '600', 
-            marginBottom: '16px',
-            color: '#374151'
-          }}>
+          <SectionTitle>
             自定义类别 ({customCategories.length})
-          </h2>
+          </SectionTitle>
           <CategoryGrid>
             <AnimatePresence>
               {customCategories.map(category => (
@@ -440,14 +447,9 @@ const CategoryManager = ({
 
       {/* 预设类别 */}
       <div>
-        <h2 style={{ 
-          fontSize: '18px', 
-          fontWeight: '600', 
-          marginBottom: '16px',
-          color: '#374151'
-        }}>
+        <SectionTitle>
           预设类别 ({presetCategories.length})
-        </h2>
+        </SectionTitle>
         <CategoryGrid>
           {presetCategories.map(category => (
             <CategoryCardComponent
