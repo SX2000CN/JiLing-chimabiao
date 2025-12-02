@@ -248,12 +248,12 @@ const SizeSettings = ({ appState, setAppState }) => {
   const handleStartValueKeyDown = (event, currentIndex) => {
     if (event.key === 'Tab') {
       event.preventDefault();
-      
+
       const inputElements = document.querySelectorAll('[data-start-value-input]');
       const totalInputs = inputElements.length;
-      
+
       if (totalInputs === 0) return;
-      
+
       let nextIndex;
       if (event.shiftKey) {
         // Shift+Tab: 向前循环
@@ -262,9 +262,34 @@ const SizeSettings = ({ appState, setAppState }) => {
         // Tab: 向后循环
         nextIndex = currentIndex === totalInputs - 1 ? 0 : currentIndex + 1;
       }
-      
-      // 聚焦到下一个输入框
-      inputElements[nextIndex]?.focus();
+
+      // 聚焦到下一个输入框并全选内容
+      const nextInput = inputElements[nextIndex];
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+      }
+    }
+  };
+
+  // 输入框获得焦点时全选内容
+  const handleStartValueFocus = (event) => {
+    event.target.select();
+  };
+
+  // 输入框失去焦点时，如果内容为空则恢复默认值
+  const handleStartValueBlur = (categoryId) => {
+    const savedValue = categoryStartValues[categoryId];
+    // 如果值为空字符串，删除自定义值以使用默认值
+    if (savedValue === '') {
+      setAppState(prev => {
+        const newStartValues = { ...prev.categoryStartValues };
+        delete newStartValues[categoryId];
+        return {
+          ...prev,
+          categoryStartValues: newStartValues
+        };
+      });
     }
   };
   
@@ -314,14 +339,15 @@ const SizeSettings = ({ appState, setAppState }) => {
   const updateCategoryStartValue = useCallback((categoryId, value) => {
     // 直接存储字符串值，允许用户输入过程中的中间状态
     const newStartValues = { ...categoryStartValues };
-    
+
     if (value === '') {
-      // 如果值为空，删除自定义值，使用默认值
-      delete newStartValues[categoryId];
+      // 允许空字符串作为中间状态（用户正在清空输入框）
+      // 只在失去焦点(onBlur)时才恢复默认值
+      newStartValues[categoryId] = '';
     } else {
       // 验证输入是否为有效的数字格式（包括中间状态如 "9." "9.5"）
       const isValidInput = /^\d*\.?\d*$/.test(value) && value !== '.';
-      
+
       if (isValidInput) {
         // 如果是完整的有效数字，存储数值；否则保持字符串状态
         const numValue = parseFloat(value);
@@ -333,7 +359,7 @@ const SizeSettings = ({ appState, setAppState }) => {
         }
       }
     }
-    
+
     setAppState(prev => ({
       ...prev,
       categoryStartValues: newStartValues
@@ -485,6 +511,8 @@ const SizeSettings = ({ appState, setAppState }) => {
                   value={getCategoryStartValue(category)}
                   onChange={(e) => updateCategoryStartValue(category.id, e.target.value)}
                   onKeyDown={(e) => handleStartValueKeyDown(e, index)}
+                  onFocus={handleStartValueFocus}
+                  onBlur={() => handleStartValueBlur(category.id)}
                   placeholder={`默认 ${category.baseValue}`}
                   size="small"
                   autoComplete="off"
