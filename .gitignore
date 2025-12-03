@@ -84,3 +84,6 @@ electron-debug.log
 # 编辑器文件
 .vscode/extensions.json
 .vscode/tasks.json
+
+# AI 工具缓存
+上下文/

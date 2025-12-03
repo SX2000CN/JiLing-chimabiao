@@ -1,6 +1,18 @@
 // Jest setup file
 // Mock DOM environment for React components
 
+// 引入 @testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  clear: jest.fn(),
+  removeItem: jest.fn(),
+};
+global.localStorage = localStorageMock;
+
 // Mock electron APIs
 global.electronAPI = {
   openFileDialog: jest.fn(),
@@ -8,7 +20,14 @@ global.electronAPI = {
   minimizeWindow: jest.fn(),
   maximizeWindow: jest.fn(),
   closeWindow: jest.fn(),
+  saveImageToPath: jest.fn(),
 };
+
+// Mock window.electronAPI
+Object.defineProperty(window, 'electronAPI', {
+  value: global.electronAPI,
+  writable: true
+});
 
 // Mock HTMLCanvasElement if not available
 if (typeof HTMLCanvasElement === 'undefined') {
