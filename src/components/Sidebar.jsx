@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import Input from './Input';
 import Button from './Button';
+import SegmentedControl from './SegmentedControl';
 import { searchCategories } from '../services/dataManager';
 
 const SidebarContainer = styled.div`
@@ -21,6 +22,66 @@ const SidebarHeader = styled.div`
   padding: 16px;
   border-bottom: 1px solid ${props => props.theme.colors.border.light};
 `;
+
+/* 模式选择器区域 */
+const ModeSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+`;
+
+const ModeLabel = styled.span`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${props => props.theme.colors.gray[600]};
+  white-space: nowrap;
+`;
+
+/* 设置按钮 - 位于模式选择器右侧 */
+const SettingsButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: ${props => props.theme.borderRadius.sm};
+  cursor: pointer;
+  color: ${props => props.theme.colors.gray[500]};
+  transition: all 0.15s ease;
+  margin-left: auto;  /* 推到右侧 */
+  flex-shrink: 0;
+  outline: none;
+
+  &:hover {
+    background: ${props => props.theme.colors.gray[100]};
+    color: ${props => props.theme.colors.gray[700]};
+  }
+
+  &:active {
+    background: ${props => props.theme.colors.gray[200]};
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.5;
+  }
+`;
+
+/* 设置图标 - SVG 齿轮 */
+const SettingsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
+);
 
 const SidebarContent = styled.div`
   flex: 1;
@@ -100,44 +161,28 @@ const CategoryItemContainer = styled(motion.div)`
 `;
 
 const CategoryIcon = styled.div`
-  width: 28px;  /* 从20px增加到28px */
+  width: 28px;
   height: 28px;
-  border-radius: ${props => props.theme.borderRadius.md}; /* 稍微增大圆角 */
-  background: ${props => {
-    switch (props.$type) {
-      case 'chest': return 'linear-gradient(135deg, #FF6B6B, #FF5252)';
-      case 'waist': return 'linear-gradient(135deg, #4ECDC4, #26A69A)'; 
-      case 'hip': return 'linear-gradient(135deg, #45B7D1, #2196F3)';
-      case 'hem': return 'linear-gradient(135deg, #9C88FF, #7B68EE)';
-      case 'shoulder': return 'linear-gradient(135deg, #96CEB4, #66BB6A)';
-      case 'sleeve': return 'linear-gradient(135deg, #FECA57, #FFB300)';
-      case 'shoulderSleeve': return 'linear-gradient(135deg, #FF8A65, #FF5722)';
-      case 'length': return 'linear-gradient(135deg, #FF9FF3, #E91E63)';
-      case 'pantLength': return 'linear-gradient(135deg, #81C784, #4CAF50)';
-      case 'skirtLength': return 'linear-gradient(135deg, #F48FB1, #E91E63)';
-      case 'backLength': return 'linear-gradient(135deg, #A1887F, #795548)';
-      case 'frontLength': return 'linear-gradient(135deg, #BCAAA4, #8D6E63)';
-      default: return `linear-gradient(135deg, ${props.theme.colors.gray[400]}, ${props.theme.colors.gray[500]})`;
-    }
-  }};
+  border-radius: ${props => props.theme.borderRadius.md};
+  /* 统一使用低饱和度深灰蓝色 - 参考 macOS Finder 风格 */
+  background: #64748b;  /* slate-500 */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px; /* 从10px增加到12px */
-  color: white;
-  font-weight: 600; /* 增加字重 */
+  font-size: 11px;  /* 优化字号 */
+  color: rgba(255, 255, 255, 0.95);  /* 柔和白色 */
+  font-weight: 700;  /* 增强字重提高锐利度 */
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加微妙阴影 */
-  
+
   /* 高质量图标渲染 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  
+
   /* 图标内容优化 */
   font-family: 'MiSans', -apple-system, BlinkMacSystemFont, sans-serif;
-  letter-spacing: -0.02em;
-  
+  letter-spacing: -0.01em;
+
   /* 预留图标扩展 */
   ${props => props.$iconUrl && `
     background-image: url(${props.$iconUrl});
@@ -146,15 +191,15 @@ const CategoryIcon = styled.div`
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   `}
-  
+
   /* 悬停效果 */
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* 高DPI优化 */
   @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
     width: 30px;
     height: 30px;
-    font-size: 13px;
+    font-size: 12px;
     transform: translateZ(0);
   }
 `;
@@ -330,9 +375,23 @@ const CategorySection = ({ title, categories, selectedIds, onToggle, mode }) => 
 /**
  * 侧边栏组件
  */
-const Sidebar = ({ appState, setAppState }) => {
+const Sidebar = ({ appState, setAppState, onSettings }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { categories, selectedCategories, mode } = appState;
+
+  // 模式选项
+  const modeOptions = [
+    { label: '普通', value: 'normal' },
+    { label: '毛衣', value: 'sweater' }
+  ];
+
+  // 处理模式切换
+  const handleModeChange = useCallback((newMode) => {
+    setAppState(prev => ({
+      ...prev,
+      mode: newMode
+    }));
+  }, [setAppState]);
 
   // 处理搜索
   const filteredCategories = searchCategories(categories, searchQuery);
@@ -350,7 +409,7 @@ const Sidebar = ({ appState, setAppState }) => {
     if (!category) return;
 
     const isSelected = selectedIds.includes(categoryId);
-    
+
     let newSelectedCategories;
     if (isSelected) {
       // 取消选择
@@ -385,6 +444,21 @@ const Sidebar = ({ appState, setAppState }) => {
   return (
     <SidebarContainer>
       <SidebarHeader>
+        {/* 模式选择器和设置按钮 */}
+        <ModeSection>
+          <ModeLabel>模式:</ModeLabel>
+          <SegmentedControl
+            options={modeOptions}
+            value={mode}
+            onChange={handleModeChange}
+            size="small"
+          />
+          <SettingsButton onClick={onSettings} title="设置">
+            <SettingsIcon />
+          </SettingsButton>
+        </ModeSection>
+
+        {/* 搜索框 */}
         <Input
           placeholder="搜索类别..."
           value={searchQuery}

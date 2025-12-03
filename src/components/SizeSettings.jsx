@@ -16,10 +16,10 @@ const PanelHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 20px;  /* 从 24px 缩小到 20px */
   font-weight: 700;
   color: ${props => props.theme.colors.gray[800]};
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
 `;
 
 const Subtitle = styled.p`
@@ -65,15 +65,14 @@ const CompactRow = styled.div`
 `;
 
 const Label = styled.label`
-  font-size: 13px;
-  font-weight: 600;
-  color: ${props => props.theme.colors.gray[700]};
-  padding-top: 8px;
+  font-size: 12px;  /* 稍微减小字号 */
+  font-weight: 500;  /* 稍微减轻字重 */
+  color: ${props => props.theme.colors.gray[600]};
+  padding-top: 0;  /* 移除顶部间距，由 CompactControlGroup 的 gap 控制 */
   white-space: nowrap;
 
   @media (max-width: 640px) {
-    padding-top: 0;
-    font-size: 12px;
+    font-size: 11px;
   }
 `;
 
@@ -81,8 +80,8 @@ const PreviewSection = styled(motion.div)`
   background: ${props => props.theme.colors.background.primary};
   border: 1px solid ${props => props.theme.colors.border.light};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: 16px;
-  margin-bottom: 20px;
+  padding: 12px;  /* 从 16px 缩小到 12px */
+  margin-bottom: 16px;  /* 从 20px 缩小到 16px */
 `;
 
 const PreviewHeader = styled.div`
@@ -100,7 +99,7 @@ const PreviewHeader = styled.div`
 
 const SettingsControls = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 12px;  /* 减小间距使布局更紧凑 */
   align-items: flex-end;
 
   @media (max-width: 768px) {
@@ -118,8 +117,8 @@ const SettingsControls = styled.div`
 const CompactControlGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 120px;
+  gap: 6px;  /* 增加标签和控件的间距，更协调 */
+  min-width: 100px;  /* 稍微减小最小宽度 */
 
   @media (max-width: 480px) {
     min-width: auto;
@@ -127,7 +126,7 @@ const CompactControlGroup = styled.div`
 `;
 
 const PreviewTitle = styled.h3`
-  font-size: 14px;
+  font-size: 13px;  /* 从 14px 缩小到 13px */
   font-weight: 600;
   color: ${props => props.theme.colors.gray[700]};
   margin: 0;
@@ -176,8 +175,8 @@ const StartValuesSection = styled(motion.div)`
   background: ${props => props.theme.colors.background.primary};
   border: 1px solid ${props => props.theme.colors.border.light};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: 16px;
-  margin-bottom: 20px;
+  padding: 12px;  /* 从 16px 缩小到 12px */
+  margin-bottom: 16px;  /* 从 20px 缩小到 16px */
 `;
 
 const StartValuesGrid = styled.div`
@@ -187,10 +186,10 @@ const StartValuesGrid = styled.div`
 
 const CategoryRow = styled.div`
   display: grid;
-  grid-template-columns: 60px 1fr auto auto;
-  gap: 12px;
+  grid-template-columns: 56px 1fr auto auto;
+  gap: 10px;
   align-items: center;
-  padding: 12px;
+  padding: 10px;  /* 从 12px 缩小到 10px */
   background: ${props => props.theme.colors.background.secondary};
   border-radius: ${props => props.theme.borderRadius.md};
   border: 1px solid ${props => props.theme.colors.border.light};
@@ -437,13 +436,20 @@ const SizeSettings = ({ appState, setAppState }) => {
             </CompactControlGroup>
             <CompactControlGroup>
               <Label>尺码数量</Label>
-              <Input
-                type="number"
-                placeholder="输入数量"
+              <Select
+                placeholder="选择数量"
+                options={[
+                  { value: 1, label: '1' },
+                  { value: 2, label: '2' },
+                  { value: 3, label: '3' },
+                  { value: 4, label: '4' },
+                  { value: 5, label: '5' },
+                  { value: 6, label: '6' },
+                  { value: 7, label: '7' },
+                  { value: 8, label: '8' },
+                ]}
                 value={count}
-                onChange={(e) => updateSizeSettings({ count: parseInt(e.target.value) || 1 })}
-                min={1}
-                max={8}
+                onChange={(value) => updateSizeSettings({ count: value })}
                 error={errors.count}
                 size="small"
               />

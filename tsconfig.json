@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    // 编译目标和模块系统
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    
+    // 严格模式设置
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    
+    // JSX 支持
+    "jsx": "react-jsx",
+    
+    // 模块导入设置
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    
+    // 路径和类型
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@services/*": ["src/services/*"],
+      "@components/*": ["src/components/*"],
+      "@types/*": ["src/types/*"]
+    },
+    "types": ["node", "jest"],
+    
+    // 增量编译
+    "incremental": true,
+    
+    // 允许 JS 文件（渐进式迁移）
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "test/**/*.ts",
+    "test/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dist-electron",
+    "build"
+  ]
+}
+

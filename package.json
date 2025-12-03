@@ -1,6 +1,6 @@
 {
   "name": "jiling-size-table",
-  "version": "2.1.0",
+  "version": "2.5.0",
   "type": "module",
   "description": "集领商品部尺码表生成器",
   "author": "师兄",
@@ -18,7 +18,7 @@
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
     "build-electron": "npm run build && electron-builder",
-    "create-icon": "node scripts/create-icon.js",
+    "create-icon": "node scripts/create-icon-advanced.js",
     "pack": "npm run build && npm run create-icon && electron-builder --dir",
     "dist": "npm run build && npm run create-icon && electron-builder",
     "dist:win": "npm run build && npm run create-icon && electron-builder --win",
@@ -40,7 +40,8 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^4.4.1",
-    "styled-components": "^6.1.0"
+    "styled-components": "^6.1.0",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.27.1",
@@ -48,6 +49,7 @@
     "@babel/preset-react": "^7.27.1",
     "@testing-library/jest-dom": "^6.1.0",
     "@testing-library/react": "^13.4.0",
+    "@types/node": "^24.10.1",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.1.0",
@@ -64,6 +66,8 @@
     "png-to-ico": "^2.1.8",
     "prettier": "^3.1.0",
     "terser": "^5.43.1",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3",
     "vite": "^5.0.0",
     "wait-on": "^7.2.0"
   },
@@ -80,10 +84,12 @@
       "main.cjs",
       "src/services/backend/**/*",
       "package.json",
-      "node_modules/**/*",
-      "build/icon.ico",
-      "build/app.ico",
-      "build/icon.png"
+      "!node_modules/.cache/**/*",
+      "!node_modules/.vite/**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md,LICENSE,license,History.md,HISTORY.md}",
+      "!**/node_modules/*/*.d.ts",
+      "!**/node_modules/**/*.map",
+      "!**/node_modules/*/{test,tests,__tests__,spec,specs,example,examples,demo,demos}/**/*"
     ],
     "extraFiles": [
       {
@@ -100,7 +106,7 @@
         "to": "build/icon.ico"
       },
       {
-        "from": "build/icon.png", 
+        "from": "build/icon.png",
         "to": "build/icon.png"
       },
       {
@@ -133,7 +139,7 @@
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico", 
+      "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
       "createDesktopShortcut": false,
       "createStartMenuShortcut": false,
@@ -144,7 +150,9 @@
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": true,
       "displayLanguageSelector": false,
-      "installerLanguages": ["zh_CN"],
+      "installerLanguages": [
+        "zh_CN"
+      ],
       "language": "2052",
       "include": "build/installer.nsh"
     },
@@ -154,7 +162,10 @@
     "electronDownload": {
       "mirror": "https://registry.npmmirror.com/-/binary/electron/"
     },
-    "includeSubNodeModules": true,
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/better-sqlite3/**/*"
+    ],
     "buildDependenciesFromSource": false,
     "nodeGypRebuild": false,
     "compression": "maximum"

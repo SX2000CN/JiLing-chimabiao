@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
 import { presetCategories, storage } from '../services/dataManager';
 import { calculateSizeData, formatSizeDataForTable } from '../services/sizeCalculator';
 import { exportSizeTableToImage, downloadImage } from '../services/tableExporter';
+import { useAppStore } from '../stores/useAppStore';
 
 // 组件导入
 import Toolbar from './Toolbar';
@@ -48,23 +49,56 @@ const ContentArea = styled.div`
 const App = () => {
   // 获取主题上下文
   const { theme } = useTheme();
-  
-  // 简单的状态管理 - 直接在 App 层级
-  const [appState, setAppState] = useState({
-    mode: 'normal',
-    sizeSettings: { 
-      startSize: 'S', 
-      count: 4 
-    },
-    selectedCategories: [],
-    categories: [],
-    categoryStartValues: {}, // 存储每个类别的自定义起始值
-    chartData: null,
-    searchQuery: '',
-    isGenerating: false,
-    isSettingsOpen: false, // 设置面板状态
-    exportPath: '', // 导出路径设置
-  });
+
+  // 从 Zustand store 获取状态和操作
+  const {
+    mode,
+    sizeSettings,
+    categories,
+    selectedCategories,
+    categoryStartValues,
+    isSettingsOpen,
+    exportPath,
+    setCategories,
+    setMode,
+    setSizeSettings,
+    setSelectedCategories,
+    setCategoryStartValues,
+    setSettingsOpen,
+    setExportPath,
+    addCategory,
+    updateCategory: storeUpdateCategory,
+    deleteCategory: storeDeleteCategory,
+  } = useAppStore();
+
+  // 为了兼容现有组件，创建 appState 对象和 setAppState 函数
+  // 这样可以渐进式迁移，不需要一次性修改所有组件
+  const [chartData, setChartData] = useState(null);
+
+  const appState = useMemo(() => ({
+    mode,
+    sizeSettings,
+    categories,
+    selectedCategories,
+    categoryStartValues,
+    chartData,
+    isSettingsOpen,
+    exportPath,
+  }), [mode, sizeSettings, categories, selectedCategories, categoryStartValues, chartData, isSettingsOpen, exportPath]);
+
+  // 兼容旧的 setAppState 接口
+  const setAppState = (updater) => {
+    const updates = typeof updater === 'function' ? updater(appState) : updater;
+
+    if ('mode' in updates) setMode(updates.mode);
+    if ('sizeSettings' in updates) setSizeSettings(updates.sizeSettings);
+    if ('categories' in updates) setCategories(updates.categories);
+    if ('selectedCategories' in updates) setSelectedCategories(updates.selectedCategories);
+    if ('categoryStartValues' in updates) setCategoryStartValues(updates.categoryStartValues);
+    if ('chartData' in updates) setChartData(updates.chartData);
+    if ('isSettingsOpen' in updates) setSettingsOpen(updates.isSettingsOpen);
+    if ('exportPath' in updates) setExportPath(updates.exportPath);
+  };
 
   // 导出状态管理
   const [exportStatus, setExportStatus] = useState({
@@ -90,24 +124,11 @@ const App = () => {
     }, 2000);
   };
 
-  // 初始化数据
+  // 初始化数据 - 加载预设类别和自定义类别
   useEffect(() => {
-    // 从本地存储加载数据
     const savedCategories = storage.load('customCategories', []);
-    const savedSettings = storage.load('sizeSettings', appState.sizeSettings);
-    const savedMode = storage.load('mode', appState.mode);
-    const savedStartValues = storage.load('categoryStartValues', {});
-    const savedExportPath = storage.load('exportPath', '');
-
-    setAppState(prev => ({
-      ...prev,
-      categories: [...presetCategories, ...savedCategories],
-      sizeSettings: savedSettings,
-      mode: savedMode,
-      categoryStartValues: savedStartValues,
-      exportPath: savedExportPath
-    }));
-  }, []);
+    setCategories([...presetCategories, ...savedCategories]);
+  }, [setCategories]);
 
   // 添加键盘快捷键监听
   useEffect(() => {
@@ -192,126 +213,71 @@ const App = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [appState.selectedCategories, appState.sizeSettings, appState.mode, appState.categoryStartValues, appState.chartData, appState.exportPath]);
 
-  // 保存数据到本地存储
+  // 保存自定义类别到本地存储（Zustand 已处理其他持久化）
   useEffect(() => {
-    const customCategories = appState.categories.filter(cat => cat.isCustom);
+    const customCategories = categories.filter(cat => cat.isCustom);
     storage.save('customCategories', customCategories);
-    storage.save('sizeSettings', appState.sizeSettings);
-    storage.save('categoryStartValues', appState.categoryStartValues);
-    storage.save('mode', appState.mode);
-    storage.save('exportPath', appState.exportPath);
-  }, [appState.categories, appState.sizeSettings, appState.mode, appState.categoryStartValues, appState.exportPath]);
+  }, [categories]);
 
   // 实时更新预览 - 当设置或选择变化时自动生成预览
   useEffect(() => {
-    const { sizeSettings, selectedCategories, mode, categoryStartValues } = appState;
-    
     // 只有当有选中的类别时才生成预览
     if (selectedCategories.length > 0) {
       try {
-        const chartData = calculateSizeData(sizeSettings, selectedCategories, mode, categoryStartValues);
-        setAppState(prev => ({
-          ...prev,
-          chartData
-        }));
+        const newChartData = calculateSizeData(sizeSettings, selectedCategories, mode, categoryStartValues);
+        setChartData(newChartData);
       } catch (error) {
         console.error('实时预览生成失败:', error);
-        // 出错时清空预览
-        setAppState(prev => ({
-          ...prev,
-          chartData: null
-        }));
+        setChartData(null);
       }
     } else {
-      // 没有选中类别时清空预览
-      setAppState(prev => ({
-        ...prev,
-        chartData: null
-      }));
+      setChartData(null);
     }
-  }, [appState.sizeSettings, appState.selectedCategories, appState.mode, appState.categoryStartValues]);
-
+  }, [sizeSettings, selectedCategories, mode, categoryStartValues]);
 
   // 窗口控制事件
-  const handleClose = () => {
-    if (confirm('确定要关闭应用吗？')) {
-      window.close();
-    }
-  };
-
-  const handleMinimize = () => {
-    // Electron 环境下的最小化
-    if (window.electronAPI) {
-      window.electronAPI.window.minimize();
-    }
-  };
-
-  const handleMaximize = () => {
-    // Electron 环境下的最大化/还原
-    if (window.electronAPI) {
-      window.electronAPI.window.toggleMaximize();
-    }
-  };
-
   const handleSettings = () => {
-    setAppState(prev => ({ ...prev, isSettingsOpen: true }));
+    setSettingsOpen(true);
   };
 
   const handleCloseSettings = () => {
-    setAppState(prev => ({ ...prev, isSettingsOpen: false }));
+    setSettingsOpen(false);
   };
 
   // 类别管理方法
   const handleCategoryAdd = (newCategory) => {
-    setAppState(prev => ({
-      ...prev,
-      categories: [...prev.categories, { ...newCategory, isCustom: true }]
-    }));
+    addCategory({ ...newCategory, isCustom: true });
   };
 
   const handleCategoryEdit = (categoryId, updatedCategory) => {
-    setAppState(prev => ({
-      ...prev,
-      categories: prev.categories.map(cat => 
-        cat.id === categoryId ? { ...cat, ...updatedCategory } : cat
-      )
-    }));
+    storeUpdateCategory(categoryId, updatedCategory);
   };
 
   const handleCategoryDelete = (categoryId) => {
-    setAppState(prev => ({
-      ...prev,
-      categories: prev.categories.filter(cat => cat.id !== categoryId),
-      selectedCategories: prev.selectedCategories.filter(id => id !== categoryId)
-    }));
-  };
-
-  const handleHelp = () => {
-    // TODO: 打开帮助文档
-    alert('帮助功能开发中...');
+    storeDeleteCategory(categoryId);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <AppContainer data-theme={theme.mode}>
-        <Toolbar
-          appState={appState}
-          setAppState={setAppState}
-          onSettings={handleSettings}
-        />
-        
+        {/* 工具栏 - 仅包含窗口控件 */}
+        <Toolbar />
+
         <ContentArea>
+          {/* 侧边栏 - 包含模式选择器和设置按钮 */}
           <Sidebar
             appState={appState}
             setAppState={setAppState}
+            onSettings={handleSettings}
           />
-          
+
           <MainContent
             appState={appState}
             setAppState={setAppState}
           />
         </ContentArea>
-        
+
+        {/* 状态栏 */}
         <StatusBar
           appState={appState}
           exportStatus={exportStatus}

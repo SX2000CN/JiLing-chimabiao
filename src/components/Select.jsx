@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SelectContainer = styled.div`
@@ -27,8 +27,8 @@ const SelectTrigger = styled(motion.button)`
   font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
   border: 1px solid ${props => props.theme.colors.border.medium};
   border-radius: ${props => props.theme.borderRadius.md};
-  background: ${props => props.theme.colors.background.primary};
-  color: ${props => props.$placeholder ? props.theme.colors.gray[400] : props.theme.colors.gray[700]};
+  background: ${props => props.theme.colors.background.secondary};
+  color: ${props => props.$placeholder ? props.theme.colors.gray[500] : props.theme.colors.gray[800]};
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease-out;
@@ -36,6 +36,7 @@ const SelectTrigger = styled(motion.button)`
 
   &:hover {
     border-color: ${props => props.theme.colors.border.dark};
+    background: ${props => props.theme.colors.background.tertiary};
   }
 
   &:focus {
@@ -45,7 +46,7 @@ const SelectTrigger = styled(motion.button)`
   }
 
   &:disabled {
-    background: ${props => props.theme.colors.gray[50]};
+    background: ${props => props.theme.colors.gray[100]};
     color: ${props => props.theme.colors.gray[400]};
     cursor: not-allowed;
   }
@@ -53,7 +54,7 @@ const SelectTrigger = styled(motion.button)`
   /* 错误状态 */
   ${props => props.$error && `
     border-color: ${props.theme.colors.error};
-    
+
     &:focus {
       border-color: ${props.theme.colors.error};
       box-shadow: 0 0 0 3px ${props.theme.colors.error}33;
@@ -74,7 +75,7 @@ const ChevronIcon = styled(motion.div)`
   transform: translateY(-50%); /* 基础居中位置，具体位置调整由Framer Motion控制 */
   width: 16px;
   height: 16px;
-  color: ${props => props.theme.colors.gray[400]};
+  color: ${props => props.theme.colors.gray[500]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +90,7 @@ const ChevronIcon = styled(motion.div)`
     border-right: 4px solid transparent;
     border-top: 4px solid currentColor;
   }
-  
+
   /* 悬停状态下的颜色变化 */
   ${props => props.$isOpen && `
     color: ${props.theme.colors.primary};
@@ -99,7 +100,7 @@ const ChevronIcon = styled(motion.div)`
 const OptionsContainer = styled(motion.div)`
   position: fixed;
   z-index: 9999;
-  background: ${props => props.theme.colors.background.primary};
+  background: ${props => props.theme.colors.background.secondary};
   border: 1px solid ${props => props.theme.colors.border.medium};
   border-radius: ${props => props.theme.borderRadius.md};
   box-shadow: ${props => props.theme.shadows.lg};
@@ -112,22 +113,22 @@ const OptionsContainer = styled(motion.div)`
 const Option = styled(motion.div)`
   padding: 8px 12px;
   font-size: 14px;
-  color: ${props => props.theme.colors.gray[700]};
+  color: ${props => props.theme.colors.gray[800]};
   cursor: pointer;
   transition: all 0.15s ease-out;
 
   &:hover {
-    background: ${props => props.theme.colors.gray[50]};
+    background: ${props => props.theme.colors.gray[100]};
   }
 
   &:active {
-    background: ${props => props.theme.colors.gray[100]};
+    background: ${props => props.theme.colors.gray[200]};
   }
 
   ${props => props.$selected && `
     background: ${props.theme.colors.primary};
     color: white;
-    
+
     &:hover {
       background: ${props.theme.colors.primary}dd;
     }
@@ -136,7 +137,7 @@ const Option = styled(motion.div)`
   ${props => props.$disabled && `
     color: ${props.theme.colors.gray[400]};
     cursor: not-allowed;
-    
+
     &:hover {
       background: transparent;
     }
@@ -179,6 +180,7 @@ const Select = ({
   className,
   ...props
 }) => {
+  const theme = useTheme();  // 获取主题以支持深色模式
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const containerRef = useRef(null);
@@ -332,10 +334,10 @@ const Select = ({
                 left: dropdownPosition.left,
                 width: dropdownPosition.width,
                 zIndex: 9999,
-                backgroundColor: 'white',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                backgroundColor: theme.colors.background.secondary,
+                border: `1px solid ${theme.colors.border.medium}`,
+                borderRadius: theme.borderRadius.md,
+                boxShadow: theme.shadows.lg,
                 maxHeight: '200px',
                 overflowY: 'auto'
               }}
@@ -353,7 +355,7 @@ const Select = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.02 }}
-                  whileHover={!option.disabled ? { backgroundColor: 'rgba(0, 0, 0, 0.04)' } : {}}
+                  whileHover={!option.disabled ? { backgroundColor: theme.colors.gray[100] } : {}}
                 >
                   {option.label}
                 </Option>

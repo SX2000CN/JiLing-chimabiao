@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-// 窗口控制容器
+// 窗口控制容器 - 延伸到左边缘，沉浸式设计
 const WindowControls = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;  /* 确保垂直居中 */
   gap: 8px;
   -webkit-app-region: no-drag;
-  padding: 8px 12px;
+  padding: 0 16px 0 16px;  /* 左侧直接到边缘，右侧保持间距 */
+  height: 100%;  /* 填满父容器高度 */
+  min-height: 32px;  /* 与工具栏高度一致（32px） */
 `;
 
 // 控制按钮

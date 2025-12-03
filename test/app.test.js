@@ -6,21 +6,21 @@
  */
 
 import { test, expect } from '@jest/globals';
-import { 
-  validateCategory, 
-  createCategory, 
-  presetCategories 
-} from '../src/services/dataManager.js';
-import { 
-  calculateSizeData, 
-  generateSizeSequence, 
-  validateSizeSettings 
-} from '../src/services/sizeCalculator.js';
-import { 
-  renderSizeChart, 
-  generateSizeChart, 
-  exportToImage 
-} from '../src/services/canvasRenderer.js';
+import {
+  validateCategory,
+  createCategory,
+  presetCategories
+} from '../src/services/dataManager.ts';
+import {
+  calculateSizeData,
+  generateSizeSequence,
+  validateSizeSettings
+} from '../src/services/sizeCalculator.ts';
+import {
+  renderSizeChart,
+  generateSizeChart,
+  exportToImage
+} from '../src/services/canvasRenderer.ts';
 
 // 测试数据管理服务
 describe('数据管理服务测试', () => {

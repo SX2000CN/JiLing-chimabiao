@@ -12,7 +12,9 @@ export default defineConfig({
       '@services': resolve(__dirname, 'src/services'),
       '@styles': resolve(__dirname, 'src/styles'),
       '@utils': resolve(__dirname, 'src/utils'),
-    }
+      '@types': resolve(__dirname, 'src/types'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
   },
   build: {
     target: 'es2015',

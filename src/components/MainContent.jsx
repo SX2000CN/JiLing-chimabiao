@@ -19,7 +19,7 @@ const TabBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 12px 20px;  /* 从 16px 24px 缩小到 12px 20px */
   background: ${props => props.theme.colors.background.primary};
   border-bottom: 1px solid ${props => props.theme.colors.border.light};
 `;
@@ -45,7 +45,7 @@ const TabContent = styled(motion.div)`
   right: 0;
   bottom: 0;
   overflow-y: auto;
-  padding: 24px;
+  padding: 16px;  /* 从 24px 缩小到 16px */
 `;
 
 const EmptyState = styled.div`

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
 import CategoryManager from './CategoryManager';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAppStore } from '../stores/useAppStore';
 
 const PanelContainer = styled(motion.div)`
   position: fixed;
@@ -80,17 +81,21 @@ const Backdrop = styled(motion.div)`
 /**
  * 设置面板组件
  */
-const SettingsPanel = ({ 
-  isOpen, 
-  onClose, 
-  appState, 
-  setAppState, 
-  onCategoryAdd, 
-  onCategoryEdit, 
-  onCategoryDelete 
+const SettingsPanel = ({
+  isOpen,
+  onClose,
+  appState,
+  setAppState,
+  onCategoryAdd,
+  onCategoryEdit,
+  onCategoryDelete
 }) => {
   const [activeTab, setActiveTab] = useState('categories');
   const { theme, isDarkMode, toggleTheme } = useTheme();
+
+  // 从 Zustand store 获取窗口控件样式设置
+  const windowControlStyle = useAppStore((state) => state.uiPreferences.windowControlStyle);
+  const setWindowControlStyle = useAppStore((state) => state.setWindowControlStyle);
 
   const tabs = [
     { id: 'categories', label: '类别管理' },
@@ -200,7 +205,165 @@ const SettingsPanel = ({
                 </label>
               </div>
             </div>
-            
+
+            {/* 窗口控件样式设置 */}
+            <div style={{
+              marginBottom: '20px',
+              padding: '16px',
+              background: 'var(--bg-secondary, #F9FAFB)',
+              borderRadius: '8px',
+              border: '1px solid var(--border-light, #E5E7EB)'
+            }}>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  color: 'var(--text-primary, #374151)',
+                  display: 'block',
+                  marginBottom: '4px',
+                  fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale'
+                }}>窗口控件样式</label>
+                <div style={{
+                  fontSize: '12px',
+                  color: 'var(--text-secondary, #6B7280)',
+                  fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale'
+                }}>选择窗口最小化、最大化、关闭按钮的显示风格</div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {/* macOS 风格选项 */}
+                <label style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '12px',
+                  border: windowControlStyle === 'macos'
+                    ? '2px solid #007AFF'
+                    : '1px solid var(--border-light, #D1D5DB)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  background: windowControlStyle === 'macos'
+                    ? 'rgba(0, 122, 255, 0.05)'
+                    : 'transparent',
+                  transition: 'all 0.2s ease'
+                }}>
+                  <input
+                    type="radio"
+                    name="windowControlStyle"
+                    value="macos"
+                    checked={windowControlStyle === 'macos'}
+                    onChange={() => setWindowControlStyle('macos')}
+                    style={{ display: 'none' }}
+                  />
+                  {/* macOS 风格预览 */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '6px',
+                    marginBottom: '8px',
+                    padding: '4px 8px',
+                    background: 'var(--bg-tertiary, #F3F4F6)',
+                    borderRadius: '4px'
+                  }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ff5f57' }} />
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ffbd2e' }} />
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#28ca42' }} />
+                  </div>
+                  <span style={{
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: 'var(--text-primary, #374151)',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>macOS</span>
+                  <span style={{
+                    fontSize: '11px',
+                    color: 'var(--text-secondary, #6B7280)',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>左上角圆形按钮</span>
+                </label>
+
+                {/* Windows 风格选项 */}
+                <label style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '12px',
+                  border: windowControlStyle === 'windows'
+                    ? '2px solid #007AFF'
+                    : '1px solid var(--border-light, #D1D5DB)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  background: windowControlStyle === 'windows'
+                    ? 'rgba(0, 122, 255, 0.05)'
+                    : 'transparent',
+                  transition: 'all 0.2s ease'
+                }}>
+                  <input
+                    type="radio"
+                    name="windowControlStyle"
+                    value="windows"
+                    checked={windowControlStyle === 'windows'}
+                    onChange={() => setWindowControlStyle('windows')}
+                    style={{ display: 'none' }}
+                  />
+                  {/* Windows 风格预览 */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '0',
+                    marginBottom: '8px',
+                    background: 'var(--bg-tertiary, #F3F4F6)',
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}>
+                    <span style={{
+                      width: '28px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '10px',
+                      color: '#6B7280'
+                    }}>─</span>
+                    <span style={{
+                      width: '28px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '8px',
+                      color: '#6B7280'
+                    }}>□</span>
+                    <span style={{
+                      width: '28px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '10px',
+                      color: '#6B7280',
+                      background: '#fee2e2'
+                    }}>✕</span>
+                  </div>
+                  <span style={{
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: 'var(--text-primary, #374151)',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>Windows</span>
+                  <span style={{
+                    fontSize: '11px',
+                    color: 'var(--text-secondary, #6B7280)',
+                    fontFamily: 'MiSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>右上角方形按钮</span>
+                </label>
+              </div>
+            </div>
+
             {/* 导出路径设置 */}
             <div style={{ 
               marginBottom: '20px',
@@ -355,7 +518,7 @@ const SettingsPanel = ({
                   fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale'
-                }}>v2.1.0</span>
+                }}>v2.5.0</span>
               </div>
               
               <div style={{ 
