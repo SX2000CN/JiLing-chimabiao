@@ -13,6 +13,8 @@ const MainContentContainer = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   min-width: 0;
+  /* 底部分割线 - 与 Sidebar 的 SelectionCounter border-top 对齐 */
+  border-bottom: 1px solid ${props => props.theme.colors.border.light};
 `;
 
 const TabBar = styled.div`

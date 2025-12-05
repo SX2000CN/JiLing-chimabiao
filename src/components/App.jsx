@@ -43,6 +43,12 @@ const ContentArea = styled.div`
   width: 100%;
 `;
 
+/* 状态栏容器 - 分割线已移至 StatusBar.jsx 使用 box-shadow 实现 */
+const StatusBarSection = styled.div`
+  width: 100%;
+  flex-shrink: 0;
+`;
+
 /**
  * 应用主入口组件
  */
@@ -277,11 +283,13 @@ const App = () => {
           />
         </ContentArea>
 
-        {/* 状态栏 */}
-        <StatusBar
-          appState={appState}
-          exportStatus={exportStatus}
-        />
+        {/* 状态栏区域 */}
+        <StatusBarSection>
+          <StatusBar
+            appState={appState}
+            exportStatus={exportStatus}
+          />
+        </StatusBarSection>
 
         <SettingsPanel
           isOpen={appState.isSettingsOpen}

@@ -8,12 +8,14 @@ const StatusBarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 28px;
+  width: 100%;
   background: ${props => props.theme.colors.background.secondary};
-  border-top: 1px solid ${props => props.theme.colors.border.light};
-  padding: 0 16px;  /* 恢复两侧均匀内边距 */
+  padding: 0 16px;
   font-size: 12px;
   color: ${props => props.theme.colors.gray[600]};
   user-select: none;
+  box-sizing: border-box;
+  flex-shrink: 0;
 `;
 
 const StatusSection = styled.div`
@@ -122,10 +124,10 @@ const StatusBar = ({ appState, exportStatus }) => {
           <StatusItem>
             <StatusIcon>
               {isExport ? (
-                statusType === 'success' ? '✅' : 
+                statusType === 'success' ? '✅' :
                 statusType === 'error' ? '❌' : '📤'
               ) : (
-                statusType === 'ready' ? '✅' : 
+                statusType === 'ready' ? '✅' :
                 statusType === 'idle' ? '⏸️' : '⚠️'
               )}
             </StatusIcon>

@@ -518,7 +518,7 @@ const SettingsPanel = ({
                   fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
                   WebkitFontSmoothing: 'antialiased',
                   MozOsxFontSmoothing: 'grayscale'
-                }}>v2.5.0</span>
+                }}>v2.5.1</span>
               </div>
               
               <div style={{ 

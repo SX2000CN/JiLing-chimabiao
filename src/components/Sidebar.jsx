@@ -12,6 +12,8 @@ const SidebarContainer = styled.div`
   max-width: 240px;
   background: ${props => props.theme.colors.background.primary};
   border-right: 1px solid ${props => props.theme.colors.border.light};
+  /* 底部分割线 - 与 MainContent 的 border-bottom 对齐形成完整的水平线 */
+  border-bottom: 1px solid ${props => props.theme.colors.border.light};
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -268,6 +270,7 @@ const SelectionCounter = styled.div`
   justify-content: space-between;
   padding: 12px;
   background: ${props => props.theme.colors.gray[50]};
+  /* 顶部分割线 - 与上方的类别列表分隔 */
   border-top: 1px solid ${props => props.theme.colors.border.light};
   font-size: 13px;
   color: ${props => props.theme.colors.gray[600]};
