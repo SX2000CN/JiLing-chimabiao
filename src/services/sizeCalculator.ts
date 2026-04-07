@@ -108,7 +108,6 @@ export const calculateSizeData = (
     return {
       categoryId: category.id,
       categoryName: category.name,
-      categoryType: category.type,
       values
     };
   });
