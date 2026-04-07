@@ -408,25 +408,27 @@ const Sidebar = ({ appState, setAppState, onSettings }) => {
 
   // 处理类别选择切换
   const handleToggleCategory = useCallback((categoryId) => {
-    const category = categories.find(cat => cat.id === categoryId);
-    if (!category) return;
+    setAppState(prev => {
+      const category = prev.categories.find(cat => cat.id === categoryId);
+      if (!category) return prev;
 
-    const isSelected = selectedIds.includes(categoryId);
+      const isSelected = prev.selectedCategories.some(cat => cat.id === categoryId);
 
-    let newSelectedCategories;
-    if (isSelected) {
-      // 取消选择
-      newSelectedCategories = selectedCategories.filter(cat => cat.id !== categoryId);
-    } else {
-      // 添加选择
-      newSelectedCategories = [...selectedCategories, category];
-    }
+      let newSelectedCategories;
+      if (isSelected) {
+        // 取消选择
+        newSelectedCategories = prev.selectedCategories.filter(cat => cat.id !== categoryId);
+      } else {
+        // 添加选择
+        newSelectedCategories = [...prev.selectedCategories, category];
+      }
 
-    setAppState(prev => ({
-      ...prev,
-      selectedCategories: newSelectedCategories
-    }));
-  }, [categories, selectedIds, selectedCategories, setAppState]);
+      return {
+        ...prev,
+        selectedCategories: newSelectedCategories
+      };
+    });
+  }, [setAppState]);
 
   // 清空选择
   const handleClearSelection = useCallback(() => {
@@ -440,9 +442,9 @@ const Sidebar = ({ appState, setAppState, onSettings }) => {
   const handleSelectAllPreset = useCallback(() => {
     setAppState(prev => ({
       ...prev,
-      selectedCategories: presetCategories
+      selectedCategories: prev.categories.filter(cat => !cat.isCustom)
     }));
-  }, [presetCategories, setAppState]);
+  }, [setAppState]);
 
   return (
     <SidebarContainer>
