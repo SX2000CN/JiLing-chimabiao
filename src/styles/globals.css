@@ -19,6 +19,7 @@
 
 html, body {
   height: 100%;
+  overflow: hidden;
   font-family: 'MiSans', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', '苹方', 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -30,11 +31,6 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   
-  /* 增强DPI缩放优化 */
-  zoom: 1;
-  transform: translateZ(0) scale(1.0001); /* 微调缩放提升渲染精度 */
-  -webkit-transform: translateZ(0) scale(1.0001);
-  
   /* 强化子像素渲染优化 */
   -webkit-font-feature-settings: "liga", "kern", "calt";
   font-feature-settings: "liga", "kern", "calt";
@@ -44,16 +40,13 @@ html, body {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  
-  /* 强制硬件加速和图层优化 */
-  will-change: transform;
-  contain: layout style paint;
 }
 
 #root {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* macOS 风格滚动条 */
@@ -91,13 +84,6 @@ textarea:focus {
 
 /* 增强高DPI支持 */
 @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
-  * {
-    /* 启用硬件加速 */
-    -webkit-transform: translateZ(0) scale(1.001);
-    transform: translateZ(0) scale(1.001);
-    will-change: transform;
-  }
-  
   /* 优化边框渲染 */
   .border-hairline {
     border-width: 0.5px;
@@ -105,16 +91,6 @@ textarea:focus {
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
-  * {
-    /* 更强的硬件加速 */
-    -webkit-transform: translateZ(0) scale(1.002);
-    transform: translateZ(0) scale(1.002);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
-  }
-  
   html, body {
     /* 超高DPI字体优化 */
     -webkit-font-smoothing: subpixel-antialiased;
@@ -128,14 +104,6 @@ textarea:focus {
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  * {
-    /* 4K/Retina显示器优化 */
-    -webkit-transform: translateZ(0) scale(1.003);
-    transform: translateZ(0) scale(1.003);
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-  
   html, body {
     font-size: 15px; /* 在高DPI下略微增大基础字体 */
   }

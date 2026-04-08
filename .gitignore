@@ -3,14 +3,14 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 
 # 构建输出
 dist/
 dist-electron/
 dist-electron-*/
 release/
-build/
+**/win-unpacked/
+artifacts/
 out/
 
 # 开发工具

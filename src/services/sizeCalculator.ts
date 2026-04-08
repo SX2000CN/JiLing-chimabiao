@@ -12,7 +12,7 @@ import type {
 } from '../types';
 
 // 标准尺码序列
-const STANDARD_SIZES: SizeCode[] = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL'];
+const STANDARD_SIZES: SizeCode[] = ['F', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL'];
 
 /** 计算模式 */
 export type CalculationMode = 'normal' | 'sweater';

@@ -22,7 +22,7 @@ export interface Chart2DOptions extends ChartOptions {
 
 // 内部尺码映射
 const SIZE_MAP: Record<string, number> = {
-  'XXS': 0, 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7
+  'F': 0, 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9, '6XL': 10
 };
 
 const SIZE_ARRAY = Object.keys(SIZE_MAP);
@@ -187,7 +187,6 @@ export const renderSizeChart2D = async (
     width = 800,
     height = 600,
     backgroundColor = '#ffffff',
-    primaryColor = '#007AFF',
     gridColor = '#E5E7EB',
     textColor = '#374151',
     fontFamily = '-apple-system, BlinkMacSystemFont, SF Pro Display, sans-serif',

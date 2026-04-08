@@ -233,6 +233,9 @@ const updaterAPI = {
 
 // 将所有 API 暴露给渲染进程
 contextBridge.exposeInMainWorld('electronAPI', {
+  // 平台信息
+  platform: process.platform,
+
   // 核心功能
   database: databaseAPI,
   export: exportAPI,
@@ -251,6 +254,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // 向后兼容的顶级文件夹选择方法
   selectDirectory: (options) => ipcRenderer.invoke('file:selectDirectory', options),
+
+  // 向后兼容的顶级导出方法
+  exportSizeChart: (sizeChart, options) =>
+    ipcRenderer.invoke('export:sizeChart', sizeChart, options),
+
+  // 向后兼容的顶级应用方法
+  restart: () => ipcRenderer.invoke('app:restart'),
+
+  // 向后兼容的顶级错误日志方法
+  logError: (errorInfo) => ipcRenderer.invoke('app:logError', errorInfo),
   
   // 向后兼容的顶级通知方法
   showNotification: (options) => ipcRenderer.invoke('notification:show', options),
@@ -329,7 +342,7 @@ window.addEventListener('DOMContentLoaded', () => {
   console.log('尺码表生成器 - 预加载脚本已加载');
   
   // 初始化数据库
-  window.electronAPI.database.initialize()
+  databaseAPI.initialize()
     .then(result => {
       if (result.success) {
         console.log('数据库初始化成功');

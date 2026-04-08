@@ -81,37 +81,6 @@ const CELL_CONFIG: CellConfig = {
   borderColor: '#000000',
 };
 
-const STYLES: Styles = {
-  header: {
-    backgroundColor: '#000000',
-    textColor: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  cell: {
-    backgroundColor: '#FFFFFF',
-    textColor: '#000000',
-    fontSize: 22,
-    fontWeight: '400',
-    textAlign: 'center',
-  },
-  firstColumn: {
-    backgroundColor: '#FFFFFF',
-    textColor: '#000000',
-    fontSize: 22,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  footer: {
-    backgroundColor: '#f2f2f2',
-    textColor: '#000000',
-    fontSize: 20,
-    fontWeight: '400',
-    textAlign: 'center',
-  }
-};
-
 // ============================================
 // 辅助函数
 // ============================================
@@ -140,9 +109,15 @@ const calculateDynamicFontSize = (
  */
 const getDynamicStyles = (cellWidth: number, cellHeight: number, cols: number = 5): Styles => {
   const getFooterBaseFontSize = (columnCount: number): number => {
-    if (columnCount === 2) return 9;
-    if (columnCount === 3) return 13;
-    if (columnCount === 4) return 17;
+    if (columnCount === 2) {
+      return 9;
+    }
+    if (columnCount === 3) {
+      return 13;
+    }
+    if (columnCount === 4) {
+      return 17;
+    }
     return 20;
   };
   
@@ -188,7 +163,9 @@ const getDynamicStyles = (cellWidth: number, cellHeight: number, cols: number = 
  * 计算表格尺寸和位置（自适应铺满600×600背景，保持10:6比例）
  */
 export const calculateTableLayout = (data: SizeTableRow[] | null): TableLayout | null => {
-  if (!data || data.length === 0) return null;
+  if (!data || data.length === 0) {
+    return null;
+  }
 
   const rows = data.length + 2;
   const cols = Object.keys(data[0]).length;
@@ -351,7 +328,7 @@ const drawCellText = (
  */
 export const exportSizeTableToImage = (
   data: SizeTableRow[],
-  tipText: string = "温馨提示:由于手工测量会存在1-3cm误差，属于正常范围"
+  tipText: string = '温馨提示:由于手工测量会存在1-3cm误差，属于正常范围'
 ): string | null => {
   const canvas = document.createElement('canvas');
   const scale = CANVAS_CONFIG.superResolutionScale;
@@ -376,7 +353,9 @@ export const exportSizeTableToImage = (
   ctx.fillRect(0, 0, CANVAS_CONFIG.width, CANVAS_CONFIG.height);
 
   const layout = calculateTableLayout(data);
-  if (!layout) return null;
+  if (!layout) {
+    return null;
+  }
 
   const headers = Object.keys(data[0]);
   const dynamicStyles = getDynamicStyles(layout.cellWidth, layout.cellHeight, headers.length);
@@ -471,8 +450,7 @@ const generateUniqueFileName = async (
       return fullPath;
     }
 
-    let counter = 1;
-    while (true) {
+    for (let counter = 1; counter <= 9999; counter++) {
       fileName = `${baseName}${counter}.${extension}`;
       fullPath = `${basePath}${pathSeparator}${fileName}`;
 
@@ -480,13 +458,9 @@ const generateUniqueFileName = async (
       if (!checkResult.success || !checkResult.exists) {
         return fullPath;
       }
-
-      counter++;
-
-      if (counter > 9999) {
-        throw new Error('无法生成唯一文件名：文件过多');
-      }
     }
+
+    throw new Error('无法生成唯一文件名：文件过多');
   }
 
   return `${baseName}.${extension}`;
