@@ -98,8 +98,27 @@ export interface AppActions {
 // 默认值
 // ============================================
 
+/**
+ * 检测初始窗口控制样式
+ * 根据操作系统自动选择合适的样式
+ */
+const detectInitialWindowStyle = (): WindowControlStyle => {
+  try {
+    // 尝试从 electronAPI 获取平台信息
+    const platform = typeof window !== 'undefined' ? window.electronAPI?.platform : undefined;
+
+    if (platform === 'win32') {
+      return 'windows';
+    }
+    // macOS (darwin) 和其他系统默认使用 macos 风格
+    return 'macos';
+  } catch {
+    return 'macos';
+  }
+};
+
 const defaultUIPreferences: UIPreferences = {
-  windowControlStyle: 'macos',
+  windowControlStyle: detectInitialWindowStyle(),
   tableStyleTemplate: 'default',
 };
 
@@ -120,7 +139,7 @@ const defaultState: AppState = {
 
 export const useAppStore = create<AppState & AppActions>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // 初始状态
       ...defaultState,
 

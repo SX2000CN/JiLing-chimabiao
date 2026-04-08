@@ -24,8 +24,10 @@
     "dist:win": "npm run build && npm run create-icon && electron-builder --win",
     "dist:portable": "npm run build && npm run create-icon && electron-builder --win portable",
     "prebuild": "npm run create-icon",
-    "clean": "rimraf dist dist-electron node_modules/.vite",
+    "clean": "rimraf artifacts/dist artifacts/dist-electron node_modules/.vite",
     "type-check": "tsc --noEmit",
+    "verify": "npm run lint:check && npm run type-check && npm test -- --runInBand && npm run build && npm run verify:docs",
+    "verify:docs": "node scripts/verify-docs.cjs",
     "pre-commit": "npm run lint:check && npm run format:check"
   },
   "dependencies": {
@@ -52,6 +54,8 @@
     "@types/node": "^24.10.1",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
+    "@typescript-eslint/parser": "^8.58.1",
     "@vitejs/plugin-react": "^4.1.0",
     "babel-jest": "^30.0.4",
     "concurrently": "^8.2.0",
@@ -76,11 +80,11 @@
     "productName": "集领尺码表生成器",
     "copyright": "Copyright © 2025 集领",
     "directories": {
-      "output": "dist-electron",
+      "output": "artifacts/dist-electron",
       "buildResources": "build"
     },
     "files": [
-      "dist/**/*",
+      "artifacts/dist/**/*",
       "main.cjs",
       "src/services/backend/**/*",
       "package.json",

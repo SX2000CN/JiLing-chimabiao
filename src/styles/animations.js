@@ -10,7 +10,7 @@ export const transitions = {
 
 // 弹性动画配置
 export const springConfig = {
-  type: "spring",
+  type: 'spring',
   stiffness: 300,
   damping: 30
 };
@@ -19,15 +19,15 @@ export const springConfig = {
 export const microAnimations = {
   hover: {
     scale: 1.02,
-    transition: { type: "spring", stiffness: 400, damping: 25 }
+    transition: { type: 'spring', stiffness: 400, damping: 25 }
   },
   tap: {
     scale: 0.98,
-    transition: { type: "spring", stiffness: 400, damping: 25 }
+    transition: { type: 'spring', stiffness: 400, damping: 25 }
   },
   focus: {
     scale: 1.01,
-    transition: { type: "spring", stiffness: 400, damping: 25 }
+    transition: { type: 'spring', stiffness: 400, damping: 25 }
   }
 };
 
@@ -58,7 +58,7 @@ export const listItemVariants = {
     y: 0,
     transition: {
       delay: index * 0.05,
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
       damping: 25
     }

@@ -8,6 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
+      '@app': resolve(__dirname, 'src/app'),
+      '@features': resolve(__dirname, 'src/features'),
+      '@shared': resolve(__dirname, 'src/shared'),
+      '@electron': resolve(__dirname, 'src/electron'),
       '@components': resolve(__dirname, 'src/components'),
       '@services': resolve(__dirname, 'src/services'),
       '@styles': resolve(__dirname, 'src/styles'),
@@ -18,7 +22,7 @@ export default defineConfig({
   },
   build: {
     target: 'es2015',
-    outDir: 'dist',
+    outDir: 'artifacts/dist',
     sourcemap: false,
     minify: 'terser',
     rollupOptions: {

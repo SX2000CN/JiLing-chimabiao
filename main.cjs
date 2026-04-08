@@ -9,6 +9,11 @@
  */
 
 const { app, BrowserWindow, Menu } = require('electron');
+console.log('Electron require check:', {
+  isAppDefined: !!app,
+  electronKeys: Object.keys(require('electron')),
+  execPath: process.execPath
+});
 const path = require('path');
 
 // 检测开发环境
@@ -16,6 +21,11 @@ const isDev = process.env.NODE_ENV === 'development' ||
              process.defaultApp || 
              /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || 
              /[\\/]electron[\\/]/.test(process.execPath);
+
+if (isDev) {
+  // 屏蔽开发环境下的 Electron 安全警告干扰
+  process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
+}
 
 // 导入后端服务
 const IPCHandler = require('./src/services/backend/ipcHandler.cjs');
@@ -185,7 +195,7 @@ class Application {
       this.mainWindow.loadURL('http://localhost:5173');
       this.mainWindow.webContents.openDevTools();
     } else {
-      this.mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
+      this.mainWindow.loadFile(path.join(__dirname, 'artifacts', 'dist', 'index.html'));
     }
 
     // 窗口准备好显示时

@@ -24,6 +24,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@features/*": ["src/features/*"],
+      "@shared/*": ["src/shared/*"],
+      "@electron/*": ["src/electron/*"],
       "@services/*": ["src/services/*"],
       "@components/*": ["src/components/*"],
       "@types/*": ["src/types/*"]
